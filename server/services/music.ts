@@ -1,6 +1,78 @@
 import { SentimentAnalysis, Song, SentimentType } from "../../client/src/lib/types";
 import { getSentimentReason } from "../../client/src/lib/sentiment";
 
+// YouTube video map - contains actual YouTube video IDs for each song
+const youtubeVideoMap: Record<string, string> = {
+  // Bullish songs
+  "Higher|The Score": "ZwJdYBGOjHE",
+  "The Only Way Is Up|Yazz": "vjD3EVC1-zU",
+  "Good Feeling|Flo Rida": "3OnnDqH6Wj8",
+  "On Top of the World|Imagine Dragons": "w5tWYmIOWGk",
+  "Unstoppable|Sia": "cOQDsmEqVt8",
+  "Can't Hold Us|Macklemore & Ryan Lewis": "8SGycAYsXOw",
+  "Uptown Funk|Mark Ronson ft. Bruno Mars": "OPf0YbXqDm0",
+  "All Star|Smash Mouth": "L_jWHffIx5E",
+  "Eye of the Tiger|Survivor": "btPJPFnesV4",
+  "Hall of Fame|The Script ft. will.i.am": "mk48xRzuNvA",
+  "Roar|Katy Perry": "CevxZvSJLk8",
+  "Rise Up|Andra Day": "kNKu1uNBVkU",
+  
+  // Slightly bullish songs
+  "Walking on Sunshine|Katrina & The Waves": "iPUmE-tne5U",
+  "Good Day|Twenty One Pilots": "Vd6AW8fT2Wc",
+  "Better Days|OneRepublic": "gpFtPf-Du3o",
+  "Beautiful Day|U2": "hjpF8ukSrvk",
+  "Happy|Pharrell Williams": "ZbZSe6N_BXs",
+  "I Gotta Feeling|Black Eyed Peas": "uSD4vsh1zDA",
+  "Here Comes the Sun|The Beatles": "GKdl-GCsNJ0",
+  "Lovely Day|Bill Withers": "bEeaS6fuUoA",
+  "Three Little Birds|Bob Marley": "LanCLS_hIo4",
+  "Good Vibrations|The Beach Boys": "Eab_beh07HU",
+  "Best Day of My Life|American Authors": "0fTUj9mfnUk",
+  
+  // Neutral songs
+  "Everyday|Logic & Marshmello": "fUjxaZ6cQgU",
+  "Middle|DJ Snake": "mOKqNxN4jWM",
+  "Stay|The Kid LAROI & Justin Bieber": "yWHrYNP6j4k",
+  "Paradise|Coldplay": "1G4isv_Fylg",
+  "Levitating|Dua Lipa": "TUVcZfQe-Kw",
+  "Dreams|Fleetwood Mac": "mrZRURcb1cM",
+  "Counting Stars|OneRepublic": "hT_nvWreIhg",
+  "Viva La Vida|Coldplay": "dvgZkm1xWPE",
+  "Californication|Red Hot Chili Peppers": "YlUKcNNmywk",
+  "Watermelon Sugar|Harry Styles": "E07s5ZYygMg",
+  "Circles|Post Malone": "wXhTHyIgQ_U",
+  "Vienna|Billy Joel": "wccRif2DaGs",
+  
+  // Slightly bearish songs
+  "Broken|lovelytheband": "qr1-WpWOUk8",
+  "Comfortably Numb|Pink Floyd": "IXdNnw99-Ic",
+  "Waiting for the End|Linkin Park": "5qF_qbaWt3Q",
+  "Gravity|John Mayer": "7VBex8zbDRs",
+  "Breathe Me|Sia": "wmhLV5UHq4I",
+  "Fix You|Coldplay": "5anLPw0Efmo",
+  "Someone Like You|Adele": "hLQl3WQQoQ0",
+  "The Scientist|Coldplay": "RB-RcX5DS5A",
+  "Skinny Love|Bon Iver": "ZQeq_T_2VE8",
+  "Landslide|Fleetwood Mac": "r00ikilDxW4",
+  "Everybody Hurts|R.E.M.": "ijZRCIrTgQc",
+  "Back to Black|Amy Winehouse": "TJAfLE39ZZ8",
+  
+  // Bearish songs
+  "Boulevard of Broken Dreams|Green Day": "Soa3gO7tL-c",
+  "Falling Down|Lil Peep & XXXTENTACION": "OGzVYyV_Jsg",
+  "Mad World|Gary Jules": "4N3N1MlvVc4",
+  "When the Party's Over|Billie Eilish": "b6WNdcZpDhQ",
+  "Hurt|Johnny Cash": "8AHCfZTRGiI",
+  "Creep|Radiohead": "XFkzRNyygfk",
+  "Nothing Compares 2 U|Sinéad O'Connor": "0-EF60neguk",
+  "Hallelujah|Jeff Buckley": "y8AWFf7EAc4",
+  "Angels|XX": "2asZbzPPE-8",
+  "How to Disappear Completely|Radiohead": "nZq_jeYsbTs",
+  "Everybody's Changing|Keane": "Zx4Hjq6KwO0",
+  "Breathe Me (Bearish)|Sia": "SFGvmrJ5rjM"
+};
+
 // Song database organized by sentiment
 const songDatabase: Record<SentimentType, Song[]> = {
   "bullish": [
@@ -76,6 +148,33 @@ const songDatabase: Record<SentimentType, Song[]> = {
 };
 
 /**
+ * Get YouTube video ID for a song
+ * @param song The song to find a YouTube video ID for
+ * @returns String containing YouTube video ID
+ */
+export function getYouTubeVideoId(song: Song): string {
+  const songKey = `${song.title}|${song.artist}`;
+  
+  // Try to find the exact song in our YouTube map
+  if (youtubeVideoMap[songKey]) {
+    return youtubeVideoMap[songKey];
+  }
+  
+  // Fallback to mood-based video selection if the exact song isn't mapped
+  // This ensures we always return a real YouTube video
+  const moodSongs = Object.keys(youtubeVideoMap).filter(key => key.includes(song.mood));
+  if (moodSongs.length > 0) {
+    // Get a consistent video based on song title hash
+    const hashCode = song.title.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const index = hashCode % moodSongs.length;
+    return youtubeVideoMap[moodSongs[index]];
+  }
+  
+  // Return a default video if nothing else works
+  return "dQw4w9WgXcQ"; // Never Gonna Give You Up as absolute fallback
+}
+
+/**
  * Generate a playlist based on stock sentiment analysis
  * @param sentiment The sentiment analysis result
  * @returns Array of songs that match the sentiment
@@ -94,9 +193,11 @@ export async function generatePlaylist(sentiment: SentimentAnalysis): Promise<So
   // Take the first 10 songs for the playlist
   const playlist = shuffledSongs.slice(0, 10);
   
-  // Add sentiment reason to each song
+  // Add sentiment reason and YouTube video ID to each song
   playlist.forEach(song => {
     song.sentimentReason = getSentimentReason(sentiment.sentiment, sentiment.patterns);
+    const videoId = getYouTubeVideoId(song);
+    song.youtubeId = videoId;
   });
   
   return playlist;

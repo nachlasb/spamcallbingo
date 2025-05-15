@@ -13,59 +13,6 @@ interface MusicPlayerProps {
   sentiment: SentimentAnalysis | null;
 }
 
-// Function to generate a YouTube search URL for a song
-const getYouTubeSearchQuery = (title: string, artist: string) => {
-  return `${title} ${artist} official audio`;
-};
-
-// Function to find a YouTube video ID for a song (simulated)
-// In a production app, this would use the YouTube API
-const getYouTubeVideoId = (song: Song): string => {
-  // This is a deterministic function to generate consistent video IDs for the same songs
-  // In a real app, we would query the YouTube API for actual videos
-  const songHash = `${song.title} ${song.artist}`.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  
-  // Select from a list of actual music video IDs based on sentiment
-  const videoIdsByMood: Record<string, string[]> = {
-    "bullish": [
-      "ZwJdYBGOjHE", // Uptown Funk - Mark Ronson ft. Bruno Mars
-      "8SGycAYsXOw", // Can't Hold Us - Macklemore & Ryan Lewis
-      "kS9BN8kkpE4", // All Star - Smash Mouth
-      "btPJPFnesV4"  // Eye of the Tiger - Survivor
-    ],
-    "slightly_bullish": [
-      "iPUmE-tne5U", // Walking on Sunshine - Katrina & The Waves
-      "hjpF8ukSrvk", // Beautiful Day - U2
-      "IZ_SFbaysHk", // Here Comes the Sun - The Beatles
-      "oaT7aQZD7Ec"  // Good Vibrations - The Beach Boys
-    ],
-    "neutral": [
-      "k5hWWe-ts2s", // Dreams - Fleetwood Mac
-      "hTWKbfoikeg", // Smells Like Teen Spirit - Nirvana
-      "aJ9usrBLguc", // Viva la Vida - Coldplay
-      "YykjpeuMNEk"  // Counting Stars - OneRepublic
-    ],
-    "slightly_bearish": [
-      "IXdNnw99-Ic", // Wish You Were Here - Pink Floyd
-      "ijZRCIrTgQc", // Everybody Hurts - R.E.M.
-      "5anLPw0Efmo", // Fix You - Coldplay
-      "r00ikilDxW4"  // Landslide - Fleetwood Mac
-    ],
-    "bearish": [
-      "aiRn3Zlw3Rw", // Hurt - Johnny Cash
-      "oG6fayQBm9w", // The Sound of Silence - Disturbed
-      "u9Dg-g7t2l4", // The Sound of Silence - Disturbed (another version)
-      "ibEnGKlzRFI"  // Creep - Radiohead
-    ]
-  };
-  
-  // Get list based on song mood
-  const moodList = videoIdsByMood[song.mood] || videoIdsByMood.neutral;
-  // Select one using the hash
-  const index = songHash % moodList.length;
-  return moodList[index];
-};
-
 export default function MusicPlayer({
   currentSong,
   recentSongs,
@@ -83,7 +30,9 @@ export default function MusicPlayer({
   // Create YouTube player when song changes
   useEffect(() => {
     if (currentSong) {
-      const newVideoId = getYouTubeVideoId(currentSong);
+      // Use the youtubeId that comes directly from the song object
+      // This ensures we're playing exactly the song that the server provided
+      const newVideoId = currentSong.youtubeId || "";
       setVideoId(newVideoId);
       
       // If player was already playing, autoplay the new song
@@ -242,6 +191,12 @@ export default function MusicPlayer({
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               ></iframe>
+            )}
+            {!videoId && currentSong && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/20 rounded-md">
+                <Youtube className="w-10 h-10 text-muted-foreground mb-2" />
+                <p className="text-muted-foreground text-sm">Loading YouTube player...</p>
+              </div>
             )}
             <div className="absolute inset-0 pointer-events-none" style={{ 
               background: "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%)",

@@ -21,6 +21,7 @@ export interface Song {
   mood: SentimentType;
   albumArt?: string;
   sentimentReason?: string;
+  youtubeId?: string;
 }
 
 export interface Playlist {
