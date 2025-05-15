@@ -79,9 +79,6 @@ export default function SpamCallBingo() {
         </Button>
       </div>
 
-      {/* How to Play Section */}
-      <HowToPlay />
-
       {/* Footer */}
       <footer className="text-center text-gray-500 text-sm mt-10 border-t border-gray-200 pt-6">
         <p>© {new Date().getFullYear()} Spam Call Bingo</p>
