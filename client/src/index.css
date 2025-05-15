@@ -1,67 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Montserrat:wght@700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Permanent+Marker&display=swap');
-
 :root {
   --background: 0 0% 100%;
-  --foreground: 20 14.3% 4.1%;
-  --muted: 60 4.8% 95.9%;
-  --muted-foreground: 25 5.3% 44.7%;
+  --foreground: 0 0% 0%;
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 40%;
   --popover: 0 0% 100%;
-  --popover-foreground: 20 14.3% 4.1%;
+  --popover-foreground: 0 0% 0%;
   --card: 0 0% 100%;
-  --card-foreground: 20 14.3% 4.1%;
-  --border: 20 5.9% 90%;
-  --input: 20 5.9% 90%;
-  --primary: 0 72% 51%;  /* Red color for primary */
+  --card-foreground: 0 0% 0%;
+  --border: 0 0% 85%;
+  --input: 0 0% 85%;
+  --primary: 0 0% 0%;  /* Black color for primary */
   --primary-foreground: 0 0% 100%;
-  --secondary: 25 95% 53%;  /* Orange color for secondary */
+  --secondary: 0 0% 30%;  /* Dark Gray color for secondary */
   --secondary-foreground: 0 0% 100%;
-  --accent: 60 4.8% 95.9%;
-  --accent-foreground: 24 9.8% 10%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 60 9.1% 97.8%;
-  --ring: 20 14.3% 4.1%;
-  --radius: 0.5rem;
+  --accent: 0 0% 95%;
+  --accent-foreground: 0 0% 10%;
+  --destructive: 0 0% 20%;
+  --destructive-foreground: 0 0% 100%;
+  --ring: 0 0% 0%;
+  --radius: 0.25rem;
 }
 
 .dark {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --primary: 0 72% 51%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 25 95% 53%;
-  --secondary-foreground: 0 0% 100%;
-  --accent: 240 3.7% 15.9%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --ring: 240 4.9% 83.9%;
-  --radius: 0.5rem;
+  --background: 0 0% 5%;
+  --foreground: 0 0% 95%;
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 65%;
+  --popover: 0 0% 5%;
+  --popover-foreground: 0 0% 95%;
+  --card: 0 0% 5%;
+  --card-foreground: 0 0% 95%;
+  --border: 0 0% 20%;
+  --input: 0 0% 20%;
+  --primary: 0 0% 95%;
+  --primary-foreground: 0 0% 5%;
+  --secondary: 0 0% 60%;
+  --secondary-foreground: 0 0% 5%;
+  --accent: 0 0% 20%;
+  --accent-foreground: 0 0% 95%;
+  --destructive: 0 0% 40%;
+  --destructive-foreground: 0 0% 95%;
+  --ring: 0 0% 80%;
+  --radius: 0.25rem;
 }
 
 /* Custom animation */
-@keyframes wiggle {
-  0%, 100% { transform: rotate(-3deg); }
-  50% { transform: rotate(3deg); }
+@keyframes pulse {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 1; }
 }
 
-.animate-wiggle {
-  animation: wiggle 1s ease-in-out infinite;
+.animate-pulse-subtle {
+  animation: pulse 2s ease-in-out infinite;
 }
 
-.font-marker {
-  font-family: 'Permanent Marker', cursive;
+.font-heading {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
 }
 
 @layer base {
@@ -81,16 +83,16 @@
 
 .bingo-tile.marked::before {
   content: "";
-  @apply absolute inset-0 bg-red-400 bg-opacity-20 rounded-lg -z-10;
+  @apply absolute inset-0 bg-black bg-opacity-10 rounded -z-10;
 }
 
 .bingo-tile.marked::after {
   content: "×";
-  @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[3rem] text-red-600 font-bold z-10;
+  @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[2.5rem] text-black font-bold z-10;
 }
 
 .win-line {
-  @apply absolute bg-green-400 bg-opacity-50 -z-10 transform-gpu;
+  @apply absolute bg-black bg-opacity-30 -z-10 transform-gpu;
 }
 
 .win-line.horizontal {
@@ -102,11 +104,11 @@
 }
 
 .win-line.diagonal-1 {
-  @apply w-[140%] h-[10px] rotate-45;
+  @apply w-[140%] h-[5px] rotate-45;
 }
 
 .win-line.diagonal-2 {
-  @apply w-[140%] h-[10px] -rotate-45;
+  @apply w-[140%] h-[5px] -rotate-45;
 }
 
 @media (max-width: 640px) {
@@ -115,6 +117,11 @@
   }
   
   .bingo-tile.marked::after {
-    @apply text-[2rem];
+    @apply text-[1.75rem];
   }
+}
+
+/* Button styling */
+.button-share {
+  @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2;
 }

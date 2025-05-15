@@ -6,13 +6,13 @@ export default function BingoCard() {
   const { currentCard, winLines } = useContext(BingoContext);
   
   return (
-    <div className="relative mx-auto mb-8 max-w-2xl bg-white rounded-xl shadow-lg p-4 md:p-6">
+    <div className="relative mx-auto mb-8 max-w-2xl bg-white rounded-md border border-gray-200 shadow-sm p-4 md:p-6">
       {/* Bingo Card Header */}
       <div className="grid grid-cols-5 gap-2 mb-2">
         {['B', 'I', 'N', 'G', 'O'].map((letter, index) => (
           <div 
             key={index} 
-            className="bg-red-600 text-white text-center font-bold py-2 rounded-md text-xl md:text-2xl"
+            className="bg-black text-white text-center font-bold py-2 rounded-sm text-xl md:text-2xl"
           >
             {letter}
           </div>

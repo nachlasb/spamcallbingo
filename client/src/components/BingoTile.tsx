@@ -29,7 +29,7 @@ export default function BingoTile({ phrase, index }: BingoTileProps) {
         "bg-white",
         "border",
         "border-gray-300",
-        "rounded-lg",
+        "rounded-sm",
         "shadow-sm",
         "flex",
         "items-center",
@@ -37,18 +37,18 @@ export default function BingoTile({ phrase, index }: BingoTileProps) {
         "relative",
         "transition-all",
         "duration-200",
-        "hover:shadow-md",
+        "hover:border-gray-500",
         "cursor-pointer",
         isMarked && "marked",
-        isFreeSpace && "bg-red-50"
+        isFreeSpace && "bg-gray-100"
       )}
       onClick={handleClick}
     >
       <div className="bingo-tile-content">
         {isFreeSpace ? (
-          <span className="font-bold text-red-600">{phrase}</span>
+          <span className="font-bold text-black">{phrase}</span>
         ) : (
-          <span>{phrase}</span>
+          <span className="text-gray-800 font-medium">{phrase}</span>
         )}
       </div>
     </div>
