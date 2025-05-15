@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 270 75% 60%; /* purple */
+  --primary-foreground: 0 0% 98%;
+  --secondary: 217 91% 60%; /* blue */
+  --secondary-foreground: 0 0% 98%;
+  --accent: 199 89% 48%; /* light blue */
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 4.9% 83.9%;
+  --radius: 0.5rem;
+
+  /* Chart colors */
+  --chart-1: 270 75% 60%;
+  --chart-2: 217 91% 60%;
+  --chart-3: 199 89% 48%;
+  --chart-4: 155 89% 42%;
+  --chart-5: 28 89% 67%;
+
+  /* Sidebar colors (not used in this app but required in tailwind config) */
+  --sidebar-background: 240 10% 3.9%;
+  --sidebar-foreground: 0 0% 98%;
+  --sidebar-primary: 270 75% 60%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 217 91% 60%;
+  --sidebar-accent-foreground: 0 0% 98%;
+  --sidebar-border: 240 3.7% 15.9%;
+  --sidebar-ring: 240 4.9% 83.9%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+.gradient-border {
+  position: relative;
+  border-radius: 0.75rem;
+  background: linear-gradient(to right, hsl(270, 75%, 60%), hsl(217, 91%, 60%));
+  padding: 1px;
+}
+
+.gradient-border > div {
+  border-radius: 0.75rem;
+  background: hsl(240, 10%, 11.9%);
+}
+
+.audio-visualizer {
+  display: flex;
+  align-items: flex-end;
+  height: 40px;
+  gap: 3px;
+}
+
+.audio-bar {
+  width: 3px;
+  background: linear-gradient(to top, hsl(270, 75%, 60%), hsl(199, 89%, 48%));
+  border-radius: 2px;
+  transition: height 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
