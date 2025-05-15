@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -157,6 +158,14 @@ export default function Home() {
       </main>
       
       <Footer />
+=======
+import SpamCallBingo from "@/components/SpamCallBingo";
+
+export default function Home() {
+  return (
+    <div className="bg-gray-100 min-h-screen font-sans text-gray-900">
+      <SpamCallBingo />
+>>>>>>> 103fe362265f463e56b7b450fd857647f03f6ea7
     </div>
   );
 }

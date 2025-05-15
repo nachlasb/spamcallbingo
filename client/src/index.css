@@ -1,8 +1,14 @@
+<<<<<<< HEAD
+=======
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Montserrat:wght@700;800;900&display=swap');
+
+>>>>>>> 103fe362265f463e56b7b450fd857647f03f6ea7
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
+<<<<<<< HEAD
   --background: 240 10% 3.9%;
   --foreground: 0 0% 98%;
   --muted: 240 3.7% 15.9%;
@@ -40,6 +46,67 @@
   --sidebar-accent-foreground: 0 0% 98%;
   --sidebar-border: 240 3.7% 15.9%;
   --sidebar-ring: 240 4.9% 83.9%;
+=======
+  --background: 0 0% 100%;
+  --foreground: 0 0% 0%;
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 40%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 0%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 0%;
+  --border: 0 0% 85%;
+  --input: 0 0% 85%;
+  --primary: 0 0% 0%;  /* Black color for primary */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 30%;  /* Dark Gray color for secondary */
+  --secondary-foreground: 0 0% 100%;
+  --accent: 0 0% 95%;
+  --accent-foreground: 0 0% 10%;
+  --destructive: 0 0% 20%;
+  --destructive-foreground: 0 0% 100%;
+  --ring: 0 0% 0%;
+  --radius: 0.25rem;
+}
+
+.dark {
+  --background: 0 0% 5%;
+  --foreground: 0 0% 95%;
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 65%;
+  --popover: 0 0% 5%;
+  --popover-foreground: 0 0% 95%;
+  --card: 0 0% 5%;
+  --card-foreground: 0 0% 95%;
+  --border: 0 0% 20%;
+  --input: 0 0% 20%;
+  --primary: 0 0% 95%;
+  --primary-foreground: 0 0% 5%;
+  --secondary: 0 0% 60%;
+  --secondary-foreground: 0 0% 5%;
+  --accent: 0 0% 20%;
+  --accent-foreground: 0 0% 95%;
+  --destructive: 0 0% 40%;
+  --destructive-foreground: 0 0% 95%;
+  --ring: 0 0% 80%;
+  --radius: 0.25rem;
+}
+
+/* Custom animation */
+@keyframes pulse {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 1; }
+}
+
+.animate-pulse-subtle {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.font-heading {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+>>>>>>> 103fe362265f463e56b7b450fd857647f03f6ea7
 }
 
 @layer base {
@@ -48,6 +115,7 @@
   }
 
   body {
+<<<<<<< HEAD
     @apply font-sans antialiased bg-background text-foreground;
   }
 }
@@ -98,3 +166,58 @@
 .fade-in {
   animation: fadeIn 0.5s ease forwards;
 }
+=======
+    @apply font-sans antialiased bg-gray-100 text-foreground;
+  }
+}
+
+/* Bingo tile styling */
+.bingo-tile-content {
+  @apply flex items-center justify-center text-center h-full p-2;
+}
+
+.bingo-tile.marked::before {
+  content: "";
+  @apply absolute inset-0 bg-black bg-opacity-10 rounded -z-10;
+}
+
+.bingo-tile.marked::after {
+  content: "×";
+  @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[2.5rem] text-black font-bold z-10;
+}
+
+.win-line {
+  @apply absolute bg-black bg-opacity-30 -z-10 transform-gpu;
+}
+
+.win-line.horizontal {
+  @apply h-[14%] w-full;
+}
+
+.win-line.vertical {
+  @apply w-[14%] h-full;
+}
+
+.win-line.diagonal-1 {
+  @apply w-[140%] h-[5px] rotate-45;
+}
+
+.win-line.diagonal-2 {
+  @apply w-[140%] h-[5px] -rotate-45;
+}
+
+@media (max-width: 640px) {
+  .bingo-tile-content {
+    @apply text-xs p-1;
+  }
+  
+  .bingo-tile.marked::after {
+    @apply text-[1.75rem];
+  }
+}
+
+/* Button styling */
+.button-share {
+  @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2;
+}
+>>>>>>> 103fe362265f463e56b7b450fd857647f03f6ea7

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { pgTable, text, serial, integer, boolean, jsonb, timestamp } from "drizzle-orm/pg-core";
+=======
+import { pgTable, text, serial, integer, boolean } from "drizzle-orm/pg-core";
+>>>>>>> 103fe362265f463e56b7b450fd857647f03f6ea7
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -15,6 +19,7 @@ export const insertUserSchema = createInsertSchema(users).pick({
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
+<<<<<<< HEAD
 
 // Stocks table to store stock information
 export const stocks = pgTable("stocks", {
@@ -88,3 +93,5 @@ export const insertPlaylistSchema = createInsertSchema(playlists).pick({
 
 export type InsertPlaylist = z.infer<typeof insertPlaylistSchema>;
 export type Playlist = typeof playlists.$inferSelect;
+=======
+>>>>>>> 103fe362265f463e56b7b450fd857647f03f6ea7

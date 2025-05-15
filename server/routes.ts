@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+<<<<<<< HEAD
 import { analyzeSentiment } from "./services/sentiment";
 import { generatePlaylist } from "./services/music";
 import { z } from "zod";
@@ -40,5 +41,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const httpServer = createServer(app);
+=======
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // For the Spam Call Bingo game, we don't need any API routes
+  // as all game logic is handled in the frontend
+
+  // This route can be used to serve the application status
+  app.get('/api/status', (_req, res) => {
+    res.json({ status: 'ok', message: 'Spam Call Bingo server is running' });
+  });
+
+  const httpServer = createServer(app);
+
+>>>>>>> 103fe362265f463e56b7b450fd857647f03f6ea7
   return httpServer;
 }
