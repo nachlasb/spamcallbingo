@@ -130,7 +130,7 @@ export default function Home() {
         </section>
         
         {/* Stock Chart Section */}
-        <section className="mb-8">
+        <section className="mb-6">
           <StockChart 
             symbol={stockSymbol} 
             analyzed={analyzed}
@@ -139,7 +139,7 @@ export default function Home() {
         </section>
         
         {/* Music Player Section */}
-        <section>
+        <section className="mb-6">
           <MusicPlayer 
             currentSong={currentSong}
             recentSongs={recentSongs}
@@ -151,7 +151,7 @@ export default function Home() {
         </section>
         
         {/* How It Works Section */}
-        <section className="mt-8">
+        <section className="mb-6">
           <HowItWorks />
         </section>
       </main>

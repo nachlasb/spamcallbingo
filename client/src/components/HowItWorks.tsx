@@ -5,34 +5,33 @@ export default function HowItWorks() {
       
       <div className="space-y-6">
         <div>
-          <h3 className="font-medium mb-2 text-accent">Stock Sentiment Analysis</h3>
+          <h3 className="font-medium mb-2 text-accent">Market Mood Analysis</h3>
           <p className="text-muted-foreground text-sm">
-            Our AI system analyzes real-time TradingView charts by capturing and processing the visual 
-            patterns. We detect candlestick formations, trend lines, volume patterns, and technical 
-            indicators to determine the current market sentiment.
+            Our system watches stock charts in real-time and identifies how the market is feeling. 
+            We look at the price movements, trading volume, and pattern shapes to determine if the 
+            market mood is positive, negative, or somewhere in between.
           </p>
         </div>
         
         <div>
-          <h3 className="font-medium mb-2 text-accent">Music Matching Algorithm</h3>
+          <h3 className="font-medium mb-2 text-accent">Music That Matches the Market</h3>
           <p className="text-muted-foreground text-sm">
-            Based on the detected sentiment, our system maps financial patterns to musical attributes:
+            Based on the market's mood, we choose music that fits the feeling:
           </p>
           <ul className="list-disc pl-5 mt-2 space-y-1 text-muted-foreground text-sm">
-            <li>Bullish trends trigger upbeat, energetic songs with higher tempos</li>
-            <li>Bearish markets match with mellower, minor-key tracks</li>
-            <li>Volatility corresponds to more complex rhythmic structures</li>
-            <li>Volume spikes influence the intensity and dynamics of selected music</li>
+            <li>Rising markets play upbeat, energetic songs</li>
+            <li>Falling markets play more thoughtful, mellow tracks</li>
+            <li>Choppy markets match with dynamic, varied music</li>
+            <li>Steady markets pair with balanced, consistent tunes</li>
           </ul>
         </div>
         
         <div>
-          <h3 className="font-medium mb-2 text-accent">Real-time Updates</h3>
+          <h3 className="font-medium mb-2 text-accent">Always Up-to-Date</h3>
           <p className="text-muted-foreground text-sm">
-            As market conditions change, the system continuously reassesses sentiment every minute, 
-            queuing up new songs that reflect the evolving market conditions. The next song remains 
-            hidden until 30 seconds before playback to ensure it accurately reflects the most current 
-            market sentiment.
+            As the market changes, so does your playlist. The system updates every minute to match 
+            the current market conditions. The next song stays hidden until the current one is 
+            almost finished, making sure your music always matches what's happening right now.
           </p>
         </div>
       </div>

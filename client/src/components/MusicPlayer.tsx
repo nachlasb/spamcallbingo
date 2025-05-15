@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Play, Lock } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { Play, Pause, Lock } from "lucide-react";
 import { Song, SentimentAnalysis } from "@/lib/types";
 import { formatTime, parseDuration } from "@/lib/sentiment";
 import AudioVisualizer from "./AudioVisualizer";
@@ -22,6 +22,40 @@ export default function MusicPlayer({
   sentiment,
 }: MusicPlayerProps) {
   const [nextSongCountdown, setNextSongCountdown] = useState<string>("--:--");
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  
+  // Initialize audio element
+  useEffect(() => {
+    if (!audioRef.current) {
+      audioRef.current = new Audio();
+      audioRef.current.volume = 0.5;
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = '';
+      }
+    };
+  }, []);
+  
+  // Handle play/pause functionality
+  useEffect(() => {
+    if (currentSong && isPlaying) {
+      // In a real application, this would be the actual song URL
+      // For this example, we're using a sample audio file
+      if (audioRef.current) {
+        audioRef.current.src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
+        audioRef.current.play().catch(error => {
+          console.error("Error playing audio:", error);
+        });
+      }
+    } else if (audioRef.current) {
+      audioRef.current.pause();
+    }
+  }, [currentSong, isPlaying]);
   
   // Calculate time until next song reveal
   useEffect(() => {
@@ -43,6 +77,13 @@ export default function MusicPlayer({
     
     return () => clearInterval(intervalId);
   }, [currentSong, currentTime]);
+
+  // Handle play/pause toggle
+  const togglePlayPause = () => {
+    if (currentSong) {
+      setIsPlaying(!isPlaying);
+    }
+  };
 
   return (
     <div className="gradient-border">
@@ -95,15 +136,19 @@ export default function MusicPlayer({
                     "Next song in --:--"}
                 </div>
               </div>
-              <button className="p-2 rounded-full bg-primary text-white">
-                <Play className="w-5 h-5" />
+              <button 
+                className={`p-2 rounded-full ${currentSong ? 'bg-primary text-white hover:bg-primary/90' : 'bg-muted text-muted-foreground cursor-not-allowed'}`}
+                onClick={togglePlayPause}
+                disabled={!currentSong}
+              >
+                {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
               </button>
             </div>
           </div>
           
           {/* Audio visualizer */}
           <div className="mt-4">
-            <AudioVisualizer active={!!currentSong} />
+            <AudioVisualizer active={!!currentSong && isPlaying} />
             <div className="w-full h-1 bg-card mt-2 rounded overflow-hidden">
               <div 
                 className="bg-primary h-full" 
@@ -122,6 +167,44 @@ export default function MusicPlayer({
               {currentSong?.sentimentReason || 
                 "Songs will be matched to stock sentiment and performance patterns in real-time"}
             </span>
+          </div>
+        </div>
+        
+        {/* Coming Next Preview */}
+        <div className="mb-4 bg-card rounded-lg p-4">
+          <div className="flex justify-between items-center">
+            <h3 className="font-medium">Coming Next</h3>
+            <span className="text-sm text-muted-foreground">
+              {currentSong ? `Reveals in ${showNextSong ? "0s" : nextSongCountdown}` : "Waiting"}
+            </span>
+          </div>
+          
+          <div className="mt-3">
+            {!currentSong || !showNextSong ? (
+              <div className="p-4 border border-dashed border-muted-foreground/30 rounded-lg flex items-center justify-center">
+                <div className="flex items-center gap-3">
+                  <Lock className="text-muted-foreground" />
+                  <span className="text-muted-foreground">Next song revealing soon</span>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-muted p-3 rounded-lg flex items-center justify-between fade-in">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-card rounded flex items-center justify-center">
+                    <svg className="w-5 h-5 text-accent" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="font-medium">{nextSong?.title}</h4>
+                    <p className="text-muted-foreground text-sm">{nextSong?.artist}</p>
+                  </div>
+                </div>
+                <div className="flex items-center text-muted-foreground text-sm">
+                  <span>{nextSong?.duration}</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         
@@ -166,44 +249,6 @@ export default function MusicPlayer({
                   </div>
                 </div>
               ))
-            )}
-          </div>
-        </div>
-        
-        {/* Coming Next Preview */}
-        <div className="mt-6 bg-card rounded-lg p-4">
-          <div className="flex justify-between items-center">
-            <h3 className="font-medium">Coming Next</h3>
-            <span className="text-sm text-muted-foreground">
-              {currentSong ? `Reveals in ${showNextSong ? "0s" : nextSongCountdown}` : "Waiting"}
-            </span>
-          </div>
-          
-          <div className="mt-3">
-            {!currentSong || !showNextSong ? (
-              <div className="p-4 border border-dashed border-muted-foreground/30 rounded-lg flex items-center justify-center">
-                <div className="flex items-center gap-3">
-                  <Lock className="text-muted-foreground" />
-                  <span className="text-muted-foreground">Next song revealing soon</span>
-                </div>
-              </div>
-            ) : (
-              <div className="bg-muted p-3 rounded-lg flex items-center justify-between fade-in">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-card rounded flex items-center justify-center">
-                    <svg className="w-5 h-5 text-accent" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-medium">{nextSong?.title}</h4>
-                    <p className="text-muted-foreground text-sm">{nextSong?.artist}</p>
-                  </div>
-                </div>
-                <div className="flex items-center text-muted-foreground text-sm">
-                  <span>{nextSong?.duration}</span>
-                </div>
-              </div>
             )}
           </div>
         </div>
