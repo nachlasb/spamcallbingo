@@ -40,13 +40,12 @@ export default function SpamCallBingo() {
           <h1 className="text-4xl md:text-6xl font-heading text-black mb-3">
             SPAM CALL BINGO
           </h1>
-            </span>
-          </div>
         </div>
         <p className="text-gray-700 max-w-lg mx-auto font-medium">
           Mark a tile when you receive a spam call with that phrase. Get 5 in a row to win.
         </p>
       </header>
+  
 
       {/* Bingo Win Notification */}
       {hasWon && <WinNotification />}
