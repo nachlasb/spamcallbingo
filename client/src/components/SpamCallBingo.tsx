@@ -40,10 +40,6 @@ export default function SpamCallBingo() {
           <h1 className="text-4xl md:text-6xl font-heading text-black mb-3">
             SPAM CALL BINGO
           </h1>
-          {/* Phone icon */}
-          <div className="absolute -top-2 -right-6">
-            <span className="inline-block p-2 bg-black rounded-md text-white">
-              <PhoneOff className="h-5 w-5" />
             </span>
           </div>
         </div>

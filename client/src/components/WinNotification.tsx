@@ -26,7 +26,7 @@ export default function WinNotification() {
         <div>
           <AlertTitle className="font-bold font-heading tracking-tight">BINGO</AlertTitle>
           <AlertDescription className="text-sm">
-            You've completed a line. Press 'New Card' to play again.
+            You're full of SPAM! Press 'New Card' to clear it out and play again.
           </AlertDescription>
         </div>
       </div>
