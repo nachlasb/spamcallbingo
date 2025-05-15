@@ -41,12 +41,15 @@ export default function MusicPlayer({
     };
   }, []);
   
-  // Handle play/pause functionality
+  // Handle play/pause functionality with YouTube integration
   useEffect(() => {
     if (currentSong && isPlaying) {
-      // In a real application, this would be the actual song URL
-      // For this example, we're using a sample audio file
+      // In a real application with YouTube integration, we would embed a YouTube player
+      // or use the YouTube API to play music. For this demo, we're using a sample audio file.
       if (audioRef.current) {
+        // We would normally search YouTube for the song and play it
+        // Example YouTube search query: `${currentSong.title} ${currentSong.artist} audio`
+        // For now, using a sample audio
         audioRef.current.src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
         audioRef.current.play().catch(error => {
           console.error("Error playing audio:", error);
