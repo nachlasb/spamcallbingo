@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Play, Pause, Lock } from "lucide-react";
+import { Play, Pause, Lock, Youtube } from "lucide-react";
 import { Song, SentimentAnalysis } from "@/lib/types";
 import { formatTime, parseDuration } from "@/lib/sentiment";
 import AudioVisualizer from "./AudioVisualizer";
@@ -13,6 +13,59 @@ interface MusicPlayerProps {
   sentiment: SentimentAnalysis | null;
 }
 
+// Function to generate a YouTube search URL for a song
+const getYouTubeSearchQuery = (title: string, artist: string) => {
+  return `${title} ${artist} official audio`;
+};
+
+// Function to find a YouTube video ID for a song (simulated)
+// In a production app, this would use the YouTube API
+const getYouTubeVideoId = (song: Song): string => {
+  // This is a deterministic function to generate consistent video IDs for the same songs
+  // In a real app, we would query the YouTube API for actual videos
+  const songHash = `${song.title} ${song.artist}`.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  
+  // Select from a list of actual music video IDs based on sentiment
+  const videoIdsByMood: Record<string, string[]> = {
+    "bullish": [
+      "ZwJdYBGOjHE", // Uptown Funk - Mark Ronson ft. Bruno Mars
+      "8SGycAYsXOw", // Can't Hold Us - Macklemore & Ryan Lewis
+      "kS9BN8kkpE4", // All Star - Smash Mouth
+      "btPJPFnesV4"  // Eye of the Tiger - Survivor
+    ],
+    "slightly_bullish": [
+      "iPUmE-tne5U", // Walking on Sunshine - Katrina & The Waves
+      "hjpF8ukSrvk", // Beautiful Day - U2
+      "IZ_SFbaysHk", // Here Comes the Sun - The Beatles
+      "oaT7aQZD7Ec"  // Good Vibrations - The Beach Boys
+    ],
+    "neutral": [
+      "k5hWWe-ts2s", // Dreams - Fleetwood Mac
+      "hTWKbfoikeg", // Smells Like Teen Spirit - Nirvana
+      "aJ9usrBLguc", // Viva la Vida - Coldplay
+      "YykjpeuMNEk"  // Counting Stars - OneRepublic
+    ],
+    "slightly_bearish": [
+      "IXdNnw99-Ic", // Wish You Were Here - Pink Floyd
+      "ijZRCIrTgQc", // Everybody Hurts - R.E.M.
+      "5anLPw0Efmo", // Fix You - Coldplay
+      "r00ikilDxW4"  // Landslide - Fleetwood Mac
+    ],
+    "bearish": [
+      "aiRn3Zlw3Rw", // Hurt - Johnny Cash
+      "oG6fayQBm9w", // The Sound of Silence - Disturbed
+      "u9Dg-g7t2l4", // The Sound of Silence - Disturbed (another version)
+      "ibEnGKlzRFI"  // Creep - Radiohead
+    ]
+  };
+  
+  // Get list based on song mood
+  const moodList = videoIdsByMood[song.mood] || videoIdsByMood.neutral;
+  // Select one using the hash
+  const index = songHash % moodList.length;
+  return moodList[index];
+};
+
 export default function MusicPlayer({
   currentSong,
   recentSongs,
@@ -23,42 +76,72 @@ export default function MusicPlayer({
 }: MusicPlayerProps) {
   const [nextSongCountdown, setNextSongCountdown] = useState<string>("--:--");
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [videoId, setVideoId] = useState<string>("");
+  const youtubePlayerRef = useRef<HTMLIFrameElement>(null);
+  const playerReadyRef = useRef<boolean>(false);
   
-  // Initialize audio element
+  // Create YouTube player when song changes
   useEffect(() => {
-    if (!audioRef.current) {
-      audioRef.current = new Audio();
-      audioRef.current.volume = 0.5;
+    if (currentSong) {
+      const newVideoId = getYouTubeVideoId(currentSong);
+      setVideoId(newVideoId);
+      
+      // If player was already playing, autoplay the new song
+      if (isPlaying) {
+        // There will be a slight delay to initialize
+        setTimeout(() => {
+          setIsPlaying(true);
+        }, 1000);
+      }
     }
-    
-    // Cleanup on unmount
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.src = '';
+  }, [currentSong]);
+  
+  // Handle play/pause functionality
+  useEffect(() => {
+    // YouTube iframe API controls
+    if (youtubePlayerRef.current && videoId) {
+      const iframeWindow = youtubePlayerRef.current.contentWindow;
+      
+      if (iframeWindow && playerReadyRef.current) {
+        if (isPlaying) {
+          // Send play command to YouTube iframe
+          iframeWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+        } else {
+          // Send pause command to YouTube iframe
+          iframeWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        }
+      }
+    }
+  }, [isPlaying, videoId]);
+  
+  // Setup YouTube API listener
+  useEffect(() => {
+    const handleYouTubeMessages = (event: MessageEvent) => {
+      // This would be used to capture YouTube player events
+      try {
+        if (typeof event.data === 'string') {
+          const data = JSON.parse(event.data);
+          if (data.event === 'onReady') {
+            // YouTube player is ready
+            playerReadyRef.current = true;
+            
+            // If we should be playing, start playing
+            if (isPlaying) {
+              const iframeWindow = youtubePlayerRef.current?.contentWindow;
+              iframeWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+            }
+          }
+        }
+      } catch (e) {
+        // Not a YouTube API message, ignore
       }
     };
-  }, []);
-  
-  // Handle play/pause functionality with YouTube integration
-  useEffect(() => {
-    if (currentSong && isPlaying) {
-      // In a real application with YouTube integration, we would embed a YouTube player
-      // or use the YouTube API to play music. For this demo, we're using a sample audio file.
-      if (audioRef.current) {
-        // We would normally search YouTube for the song and play it
-        // Example YouTube search query: `${currentSong.title} ${currentSong.artist} audio`
-        // For now, using a sample audio
-        audioRef.current.src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
-        audioRef.current.play().catch(error => {
-          console.error("Error playing audio:", error);
-        });
-      }
-    } else if (audioRef.current) {
-      audioRef.current.pause();
-    }
-  }, [currentSong, isPlaying]);
+    
+    window.addEventListener('message', handleYouTubeMessages);
+    return () => {
+      window.removeEventListener('message', handleYouTubeMessages);
+    };
+  }, [isPlaying]);
   
   // Calculate time until next song reveal
   useEffect(() => {
@@ -105,9 +188,7 @@ export default function MusicPlayer({
               <div className="w-16 h-16 rounded-md bg-card flex items-center justify-center overflow-hidden">
                 {currentSong ? (
                   <div className="w-full h-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white">
-                    <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
-                    </svg>
+                    <Youtube className="w-8 h-8" />
                   </div>
                 ) : (
                   <svg className="w-8 h-8 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -149,8 +230,27 @@ export default function MusicPlayer({
             </div>
           </div>
           
-          {/* Audio visualizer */}
-          <div className="mt-4">
+          {/* YouTube Player (hidden unless playing) */}
+          <div className={`mt-4 relative ${isPlaying ? "block" : "hidden"}`} style={{ paddingBottom: "56.25%" }}>
+            {videoId && (
+              <iframe
+                ref={youtubePlayerRef}
+                className="absolute top-0 left-0 w-full h-full rounded-md"
+                src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=${isPlaying ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0`}
+                title="YouTube music player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            )}
+            <div className="absolute inset-0 pointer-events-none" style={{ 
+              background: "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%)",
+              zIndex: 1 
+            }}></div>
+          </div>
+          
+          {/* Audio visualizer (shown when not displaying YouTube) */}
+          <div className={`mt-4 ${!isPlaying ? "block" : "hidden"}`}>
             <AudioVisualizer active={!!currentSong && isPlaying} />
             <div className="w-full h-1 bg-card mt-2 rounded overflow-hidden">
               <div 
